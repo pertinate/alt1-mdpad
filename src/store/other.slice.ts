@@ -11,10 +11,25 @@ export type State = typeof state;
 
 export type Actions = {
     increase: (by: number) => void;
-    getMsg: (msg: string) => void;
+    newMsg: () => void;
 };
 
 export type OtherStore = State & Actions;
+
+function makeid(length: number) {
+    let result = "";
+    const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+        result += characters.charAt(
+            Math.floor(Math.random() * charactersLength)
+        );
+        counter += 1;
+    }
+    return result;
+}
 
 const actions: (
     set: Setter<OtherStore>,
@@ -25,10 +40,10 @@ const actions: (
     return {
         increase: (by) => {
             set({ counter: get().counter + by });
-            api.getState().example.increase(2);
+            api.getState().example.increase(by * 2);
         },
-        getMsg: (msg: string) => {
-            set({ msg });
+        newMsg: () => {
+            set({ msg: makeid(15) });
         },
     };
 };

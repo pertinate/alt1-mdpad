@@ -4,14 +4,18 @@ import { StoreState } from "./store";
 
 const state = {
     counter: 0,
-    msg: "",
+    msg: {
+        id: 0,
+        quote: "",
+        author: "",
+    },
 };
 
 export type State = typeof state;
 
 export type Actions = {
     increase: (by: number) => void;
-    getMsg: (msg: string) => void;
+    getMsg: () => void;
 };
 
 export type ExampleStore = State & Actions;
@@ -26,8 +30,22 @@ const actions: (
         increase: (by) => {
             set({ counter: get().counter + by });
         },
-        getMsg: (msg: string) => {
-            set({ msg });
+        getMsg: async () => {
+            const apiResponse = (await (
+                await fetch("https://dummyjson.com/quotes")
+            ).json()) as {
+                quotes: {
+                    id: number;
+                    quote: string;
+                    author: string;
+                }[];
+            };
+
+            set({
+                msg: apiResponse.quotes[
+                    Math.floor(Math.random() * apiResponse.quotes.length)
+                ],
+            });
         },
     };
 };
